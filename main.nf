@@ -40,6 +40,10 @@ include { VCFINTERSECT } from './workflows/vcfintersect'
 //
 workflow NFCORE_VCFINTERSECT {
     VCFINTERSECT ()
+    // ch_vcf_from_directory = Channel.fromPath("${params.input}/*.vcf")
+    // emit: ch_vcf_from_directory
+    // Emit for testing purpose
+    emit: VCFINTERSECT.out
 }
 
 /*
@@ -54,6 +58,9 @@ workflow NFCORE_VCFINTERSECT {
 //
 workflow {
     NFCORE_VCFINTERSECT ()
+
+    // emit ch_test from imported workflow
+    NFCORE_VCFINTERSECT.out.view()
 }
 
 /*
