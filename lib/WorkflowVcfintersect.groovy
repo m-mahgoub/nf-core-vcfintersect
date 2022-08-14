@@ -1,5 +1,5 @@
 //
-// This file holds several functions specific to the workflow/vcfintersect.nf in the nf-core/vcfintersect pipeline
+// This file holds several functions specific to the workflow/vcfintersect.nf in the m-mahgoub/vcfintersect pipeline
 //
 
 class WorkflowVcfintersect {

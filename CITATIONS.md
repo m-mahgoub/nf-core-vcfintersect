@@ -1,4 +1,4 @@
-# nf-core/vcfintersect: Citations
+# m-mahgoub/vcfintersect: Citations
 
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 

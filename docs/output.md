@@ -1,4 +1,4 @@
-# nf-core/vcfintersect: Output
+# m-mahgoub/vcfintersect: Output
 
 ## Introduction
 

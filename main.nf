@@ -1,9 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/vcfintersect
+    m-mahgoub/vcfintersect
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/nf-core/vcfintersect
+    Github : https://github.com/m-mahgoub/vcfintersect
     Website: https://nf-co.re/vcfintersect
     Slack  : https://nfcore.slack.com/channels/vcfintersect
 ----------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ WorkflowMain.initialise(workflow, params, log)
 include { VCFINTERSECT } from './workflows/vcfintersect'
 
 //
-// WORKFLOW: Run main nf-core/vcfintersect analysis pipeline
+// WORKFLOW: Run main m-mahgoub/vcfintersect analysis pipeline
 //
 workflow NFCORE_VCFINTERSECT {
     VCFINTERSECT ()
