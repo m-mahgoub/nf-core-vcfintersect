@@ -1,0 +1,1 @@
+1) Make sure to verify input of compressed VCF files if the config is compressed_vcf = true
