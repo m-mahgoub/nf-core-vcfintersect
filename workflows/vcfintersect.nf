@@ -33,6 +33,8 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 // include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { BCFTOOLS_MERGE                   } from '../modules/local/bcftools_merge.nf'
+include { BCFTOOLS_VIEW                  } from '../modules/local/bcftools_view.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,7 +48,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 include { MULTIQC                          } from '../modules/nf-core/modules/multiqc/main'
 include { TABIX_BGZIPTABIX                 } from '../modules/nf-core/modules/tabix/bgziptabix/main.nf'
 include { TABIX_TABIX                      } from '../modules/nf-core/modules/tabix/tabix/main.nf'
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
+include { CUSTOM_DUMPSOFTWAREVERSIONS      } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,6 +94,35 @@ workflow VCFINTERSECT {
         ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions.first())   
     }
 
+    //
+    // MODULE: Merge VCF files (if multiple files provided)
+    //
+    if (params.multiple_vcf_directory) {
+        // Collect all .gz files in one channel
+        ch_compressed_indexed_vcf.gz_tbi
+        .collect( { it -> it[1] } )
+        .set { ch_gz_files }
+
+        // Collect all .tbi files in one channel
+        ch_compressed_indexed_vcf.gz_tbi
+        .collect( { it -> it[2] } )
+        .set { ch_tbi_files }
+
+        BCFTOOLS_MERGE (
+            ch_gz_files, 
+            ch_tbi_files
+        )
+        ch_merged_vcf = BCFTOOLS_MERGE.out.merged_variants
+        ch_versions = ch_versions.mix(BCFTOOLS_MERGE.out.versions)
+    }
+
+    //
+    // MODULE: Filter merged VCF file
+    BCFTOOLS_VIEW (
+        ch_merged_vcf
+    )
+    ch_filtered_vcf = BCFTOOLS_VIEW.out.vcf
+    ch_versions = ch_versions.mix(BCFTOOLS_VIEW.out.versions) 
 
     // FASTQC (
     //     INPUT_CHECK.out.reads
@@ -123,8 +154,11 @@ workflow VCFINTERSECT {
 
 
     // Emit for testing purpose
-    emit: Channel.empty()
+    // emit: Channel.empty()
     // emit: ch_compressed_indexed_vcf.gz_tbi
+    //  emit: ch_gz_files
+    // emit : ch_merged_vcf.merged_variants
+    emit: ch_filtered_vcf
 }
 
 /*
